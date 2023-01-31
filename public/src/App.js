@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { internalMemory } from "./utilities";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import { Route, Routes, useNavigate} from "react-router-dom"
+import { Navbar } from "./components/Shared/Navbar";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
+
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate()
 
     const onLogout = () => {
         setToken(null);
@@ -15,6 +20,7 @@ function App() {
     const onLogin = (_token) => {
         setToken(_token);
         internalMemory.save("token", _token);
+        navigate("/profile")
     }
 
     useEffect(() => {
@@ -29,15 +35,22 @@ function App() {
         return <h1>Loading...</h1>
     }
 
-    if (!token) {
-        return (
-            <Login onLogin={onLogin} />
-        )
-    } else {
-        return (
-            <Profile onLogout={onLogout} token={token}/>
-        )
-    }
+    return (
+        <>
+        <Navbar/> 
+        <Routes>
+            <Route path="/login" element={<Login onLogin={onLogin}/>}/>
+            <Route path="/profile" element={
+                <ProtectedRoute token={token}>
+                    <Profile onLogout={onLogout} token={token} />
+                </ProtectedRoute>
+            }/>
+        </Routes>
+        </>
+    )
+    
 }
+
+
 
 export default App
