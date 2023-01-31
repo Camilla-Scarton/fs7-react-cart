@@ -3,8 +3,8 @@ import { useState } from "react";
 
 function Form({handleSubmit}) {
     const [data, setData] = useState({
-        email: "",
-        password: "",
+        email: "paolo.rossi@example.com",
+        password: "1234",
     });
 
     function handleInput(e) {
